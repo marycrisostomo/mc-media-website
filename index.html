@@ -7,22 +7,14 @@
 <title>Mc-Media</title>
 </head>
 <body>
-  <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="#" class="logo" id="logoLink">
-                <img src="https://raw.githubusercontent.com/marycrisostomo/mc-media-website/main/mclogo.png" class="logo-image">
-            </a>
-            <div class="nav-right">
-                <ul class="nav-links">
-                    <li><a href="index.html" class="nav-link active" data-page="home">Home</a></li>
-                    <li><a href="pages/services.html" class="nav-link" data-page="services">Services</a></li>
-                    <li><a href="pages/about.html" class="nav-link" data-page="about">About</a></li>
-                    <li><a href="pages/contact.html" class="nav-link" data-page="contact">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  <div id="navbar"></div>
+
+<script>
+fetch("./partials/header.html")
+    .then(res => res.text())
+    .then(html => document.getElementById("navbar").innerHTML = html);
+</script>
+
     <!-- Sticky Banner with Animation -->
     <div class="sticky-banner">
         <h3>we embed copyright and creators get paid! / we embed copyright and creators get paid! / we embed copyright and creators get paid! / we embed copyright and creators get paid! / we embed copyright and creators get paid! / we embed copyright and creators get paid! / we embed copyright and creators get paid! / we embed copyright and creators get paid! / we embed copyright and creators get paid! / we embed copyright and creators get paid! /</h3>
@@ -103,11 +95,11 @@
                     <!-- White Label with Filter Buttons -->
                     <div class="cassette-label">
                         <div class="cassette-controls">
-                            <button class="cassette-button active" onclick="filterContent('all')">All</button>
-                            <button class="cassette-button" onclick="filterContent('blog')">Blog</button>
-                            <button class="cassette-button" onclick="filterContent('projects')">Projects</button>
-                            <button class="cassette-button" onclick="filterContent('talks')">Talks</button>
-                        </div>
+                        <button class="cassette-button active" data-category="all">All</button>
+                        <button class="cassette-button" data-category="blog">Blog</button>
+                        <button class="cassette-button" data-category="projects">Projects</button>
+                        <button class="cassette-button" data-category="talks">Talks</button>
+                    </div>
                     </div>
 
                     <!-- No Content Messages -->
@@ -129,7 +121,7 @@
                     <!-- Cassette Content - Tracks (REMOVED PODCAST AND SYMPHONIC) -->
                     <div class="cassette-content">
                         <!-- Projects Content -->
-                        <div class="cassette-track projects-content" onclick="navigateToContentPage('duck1')">
+                        <div class="cassette-track projects-content" data-target="duck1">
                             <div class="track-number">1</div>
                             <div class="track-info">
                                 <h3>Duck1 Testing Phase for Music Rights Management</h3>
@@ -139,7 +131,7 @@
                         </div>
 
                         <!-- Talks Content -->
-                        <div class="cassette-track talks-content" onclick="navigateToContentPage('mobygratis')">
+                        <div class="cassette-track talks-content" data-target="mobygratis">
                             <div class="track-number">2</div>
                             <div class="track-info">
                                 <h3>Mobygratis Explained: Conversations about licensing agreement with Natalie Jacobs</h3>
@@ -151,7 +143,7 @@
                 </div>
             </div>
         </div>
-<!-- here should be footer -->
+
         
     </section>
 
@@ -179,9 +171,6 @@
                     </div>
                 </div>
             </div>
-            
-           <!-- here should be footer -->
-      
     </section>
 
     <!-- Mobygratis Page -->
@@ -219,13 +208,20 @@
                     <p class="mobygratis-link">To learn more, visit <a href="https://mobygratis.com" target="_blank">https://mobygratis.com</a></p>
                 </div>
             </div>
-            
-<!-- here should be footer -->
+          
     </section>
+
+        <!-- Footer -->
+        <div id="footer-home"></div>
+        <script>
+        fetch("./partials/footer.html")
+            .then(res => res.text())
+            .then(html => document.getElementById("footer-home").innerHTML = html);
+        </script>
+
 
     <!-- Back to Home Button (Hidden on Home Page) -->
     <button class="back-to-home" id="backToHome" style="display: none;">← Back to Home</button>
-
     <script src="scripts.js"></script>
 </body>
 </html>

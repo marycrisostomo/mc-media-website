@@ -1277,7 +1277,7 @@
             font-size: 0.9rem;
             font-weight: bold;
             transition: all 0.3s ease;
-            z-index: 999; /* HIGHER Z-INDEX TO APPEAR ABOVE MENU */
+            z-index: 1002; /* HIGHER Z-INDEX TO APPEAR ABOVE MENU */
         }
 
         .back-to-home:hover {
