@@ -178,3 +178,41 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Initialize video controls
     initVideoControls();
 });
+
+
+// ======================================
+// CONTACT MAIL STATUS
+// ======================================   
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    
+    if (!form) return;
+     form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        formStatus.textContent = 'sending...';
+        formStatus.style.color = '#666';
+        
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                formStatus.textContent = 'Message sent !';
+                formStatus.style.color = 'green';
+                form.reset();
+            } else {
+                throw new Error('Erreur');
+            }
+        } catch (error) {
+            formStatus.textContent = 'Error. Please, retry.';
+            formStatus.style.color = 'red';
+        }
+    });
+}
