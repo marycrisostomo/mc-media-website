@@ -1,4 +1,46 @@
 // ======================================
+// LOAD HEADER FOR STANDALONE PAGES
+// ======================================
+function loadStandaloneHeader() {
+    (async () => {
+      try {
+        const res = await fetch("/partials/header.html");
+        const html = await res.text();
+        
+        const navbarContainer = document.getElementById("navbar");
+        navbarContainer.innerHTML = html;
+        
+        await new Promise(resolve => setTimeout(resolve, 10));
+        
+        let currentPath = window.location.pathname;
+        if (currentPath === "/") currentPath = "/index.html";
+        currentPath = currentPath.split("?")[0].split("#")[0];
+        
+        const links = navbarContainer.querySelectorAll('.nav-link');
+        
+        links.forEach(link => {
+          let linkPath = new URL(link.href).pathname;
+          linkPath = linkPath.split("?")[0].split("#")[0];
+          
+          if ((currentPath === "/index.html" && linkPath === "/index.html") ||
+              currentPath === linkPath) {
+            link.classList.add('active');
+          }
+        });
+        
+        navbarContainer.style.visibility = "visible";
+        
+        // Init après chargement du header
+        initThemeToggle();
+        initHeaderAndNavigation();
+        
+      } catch (err) {
+        console.error("Erreur chargement navbar :", err);
+      }
+    })();
+}
+
+// ======================================
 // DOM ELEMENTS AFTER HEADER LOAD
 // ======================================
 function initHeaderAndNavigation() {
@@ -8,7 +50,6 @@ function initHeaderAndNavigation() {
     const logoLink = document.getElementById('logoLink');
     const backToHomeBtn = document.getElementById('backToHome');
 
-    // LOGO REDIRECT TO HOME  
     if (logoLink) {  
         logoLink.addEventListener('click', (e) => {  
             e.preventDefault();  
@@ -16,26 +57,22 @@ function initHeaderAndNavigation() {
         });  
     }  
 
-    // MOBILE MENU TOGGLE  
     if (mobileMenuBtn) {  
         mobileMenuBtn.addEventListener('click', () => {  
             if (navLinks) navLinks.classList.toggle('active');
         });  
     }  
 
-    // NAVIGATION EVENT LISTENERS  
-   navLinksAll.forEach(link => {  
-    link.addEventListener('click', (e) => {  
-        const pageId = link.getAttribute('data-page');  
-
-        if (!pageId) return; // ← allow normal navigation
+    navLinksAll.forEach(link => {  
+        link.addEventListener('click', (e) => {  
+            const pageId = link.getAttribute('data-page');  
+        if (!pageId || !document.body.classList.contains('spa-mode')) return;
 
         e.preventDefault();  
         navigateToPage(pageId);  
-    });  
-});
+        });  
+    });
 
-    // BACK TO HOME BUTTON
     if (backToHomeBtn) {  
         backToHomeBtn.addEventListener('click', () => navigateToPage('home'));  
     }  
@@ -58,7 +95,6 @@ function navigateToPage(pageId) {
     const section = document.getElementById(pageId);
     if (section) section.classList.add('active');
 
-    // Sticky banner / back button  
     if (stickyBanner && backToHomeBtn) {
         if (pageId === 'home') {  
             stickyBanner.style.display = 'none';  
@@ -69,17 +105,14 @@ function navigateToPage(pageId) {
         }  
     }
 
-    // Close mobile menu  
     const navLinks = document.querySelector('.nav-links');  
     if (navLinks) navLinks.classList.remove('active');  
 
-    // Active nav link - MODIFIÉ ICI
     const navLinksAll = document.querySelectorAll('.nav-link');  
     navLinksAll.forEach(link => {  
         link.classList.remove('active');  
         const linkDataPage = link.getAttribute('data-page');
         
-        // Si c'est une section interne (duck1, mobygratis), garder Home actif
         const internalSections = ['duck1', 'mobygratis'];
         if (internalSections.includes(pageId)) {
             if (linkDataPage === 'home') {
@@ -153,34 +186,6 @@ function initVideoControls() {
 }
 
 // ======================================
-// INITIALIZATION
-// ======================================
-document.addEventListener('DOMContentLoaded', () => {
-
-    // 1. Load header SEULEMENT en mode SPA (index.html)
-    if (document.body.classList.contains('spa-mode')) {
-        fetch("/partials/header.html")
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById("navbar").innerHTML = html;
-                initHeaderAndNavigation();
-                navigateToPage('home');
-            });
-    } else {
-        // En mode standalone, le header est déjà chargé, juste init la nav si besoin
-        initHeaderAndNavigation();
-    }
-
-    // 2. Initialize cassette buttons + track clicks
-    initCassetteFilter();
-    initTrackNavigation();
-
-    // 3. Initialize video controls
-    initVideoControls();
-});
-
-
-// ======================================
 // CONTACT MAIL STATUS
 // ======================================   
 function initContactForm() {
@@ -188,7 +193,8 @@ function initContactForm() {
     const formStatus = document.getElementById('formStatus');
     
     if (!form) return;
-     form.addEventListener('submit', async (e) => {
+    
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         formStatus.textContent = 'sending...';
@@ -216,3 +222,59 @@ function initContactForm() {
         }
     });
 }
+
+// ======================================
+// THEME TOGGLE (DARK/LIGHT MODE)
+// ======================================
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    
+    if (!themeToggle) return;
+    
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        themeToggle.textContent = '☀️';
+    } else {
+        document.body.classList.remove('light-mode');
+        themeToggle.textContent = '🌙';
+    }
+    
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        
+        if (document.body.classList.contains('light-mode')) {
+            themeToggle.textContent = '☀️';
+            localStorage.setItem('theme', 'light');
+        } else {
+            themeToggle.textContent = '🌙';
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+}
+
+// ======================================
+// INITIALIZATION
+// ======================================
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.body.classList.contains('spa-mode')) {
+        // Mode SPA (index.html)
+        fetch("/partials/header.html")
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("navbar").innerHTML = html;
+                initHeaderAndNavigation();
+                navigateToPage('home');
+                initThemeToggle();
+            });
+    } else if (document.body.classList.contains('standalone-mode')) {
+        // Mode standalone - le header se chargera via loadStandaloneHeader()
+        // (appelé depuis le HTML)
+    }
+
+    initCassetteFilter();
+    initTrackNavigation();
+    initVideoControls();
+    initContactForm();
+});
