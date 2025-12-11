@@ -30,7 +30,7 @@
     /* Variables pour light mode */
 body.light-mode {
     --main-color: #f5f7f9;
-    --card-color:  #766ea8;
+    --card-color: #6c5ce7;
     --article-bg-color:#f5f7f9;
     --founder-card-bg-color: #6c5ce7;
     --network-logo-bg-color: #e9eef1;
@@ -39,7 +39,7 @@ body.light-mode {
     --bigtitle-color: #056f85;
     --title-color:  #262841;
     --date-color: #3da3b2;
-    --container-color: #6c5ce7;
+    --container-color: ;
     /*buttons*/
     --button-color: #262841;
     --button-hover-color: #181526;
@@ -98,7 +98,8 @@ body.light-mode #themeToggle:hover {
         /* ======================================
            HEADER - NAVIGATION
            ====================================== */
-        nav {
+    
+           nav {
             position: fixed;
             top: 0;
             width: 100%;
@@ -106,7 +107,9 @@ body.light-mode #themeToggle:hover {
             z-index: 1000;
             border-bottom: 1px solid #000;
         }
-
+        body.light-mode nav{
+                background: #766ea8;
+            }
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -877,7 +880,7 @@ body.light-mode #themeToggle:hover {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
-            color: var(--bigtitle-color);
+            color: var(title-color);
             padding-bottom: 0.75rem;
             border-bottom:3px solid var(--divider-color);
         }
